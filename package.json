@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-dev": "nodemon -q ."
+    "start-dev": "nodemon -q .",
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
