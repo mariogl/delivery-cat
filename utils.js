@@ -41,9 +41,17 @@ const allowedChannelNames = [
   "challenge-weekend",
 ];
 
-const extractInfo = async (msg) => {
+const extractChannel = async (msg) => {
   const channel = msg.guild.channels.cache.get(msg.channelId);
   const category = msg.guild.channels.cache.get(channel.parentId);
+
+  return {
+    channel,
+    category,
+  };
+};
+
+const extractInfo = async (msg) => {
   const message = msg.content.trim();
   let { nickname } = await msg.guild.members.fetch(msg.author);
   nickname = nickname
@@ -53,8 +61,6 @@ const extractInfo = async (msg) => {
     .toLowerCase();
 
   return {
-    channel,
-    category,
     message,
     nickname,
   };
@@ -89,6 +95,7 @@ const getExpectedRepoPrefix = (categoryName, channelName) => {
 module.exports = {
   isDeliveryChannel,
   extractInfo,
+  extractChannel,
   cloneRepo,
   checkLineFormat,
   getExpectedRepoPrefix,
