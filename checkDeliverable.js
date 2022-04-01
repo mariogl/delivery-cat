@@ -9,16 +9,19 @@ const {
   cloneRepo,
   checkLineFormat,
   getExpectedRepoPrefix,
+  extractChannel,
 } = require("./utils");
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 const checkDeliverable = async (msg, isEdit = false) => {
-  const { channel, category, message, nickname } = await extractInfo(msg);
+  const { channel, category } = await extractChannel(msg);
 
   if (!isDeliveryChannel(category.name, channel.name)) {
     return;
   }
+
+  const { message, nickname } = await extractInfo(msg);
 
   debug(chalk.green("\n========================================"));
   debug(
