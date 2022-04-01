@@ -1,12 +1,12 @@
 require("dotenv").config();
 const debug = require("debug")("discord-bot:checkDeliverable");
 const { Octokit } = require("@octokit/rest");
+const axios = require("axios");
 const chalk = require("chalk");
 const getRandomYield = require("./randomYields");
 const {
   extractInfo,
   isDeliveryChannel,
-  cloneRepo,
   checkLineFormat,
   getExpectedRepoPrefix,
   extractChannel,
@@ -16,7 +16,6 @@ const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 const checkDeliverable = async (msg, isEdit = false) => {
   const { channel, category } = await extractChannel(msg);
-
   if (!isDeliveryChannel(category.name, channel.name)) {
     return;
   }
@@ -36,6 +35,7 @@ const checkDeliverable = async (msg, isEdit = false) => {
     }));
 
   const lines = message.split("\n");
+  let repoURL;
 
   try {
     for (const line of lines) {
@@ -48,8 +48,6 @@ const checkDeliverable = async (msg, isEdit = false) => {
 
       debug(chalk.greenBright("-> OK"));
 
-      let repoURL;
-
       if (!line.startsWith("Repo:") && !line.startsWith("Front - repo:")) {
         continue;
       }
@@ -60,6 +58,8 @@ const checkDeliverable = async (msg, isEdit = false) => {
         throw error;
       }
 
+      const repoURLPosition = line.search("https://github.com");
+      repoURL = line.slice(repoURLPosition);
       const repoPath = line.split("https://github.com/")[1];
       const parts = repoPath.split("/");
       const owner = parts[0];
@@ -77,6 +77,7 @@ const checkDeliverable = async (msg, isEdit = false) => {
         !repoName.includes(nickname)
       ) {
         const error = new Error("Nombre de repo mal formado");
+        debug(chalk.red(error.message));
         error.repo = true;
         error.expectedRepoPrefix = expectedRepoPrefix;
         throw error;
@@ -93,12 +94,6 @@ const checkDeliverable = async (msg, isEdit = false) => {
           });
 
           debug(chalk.greenBright("OK"));
-
-          debug(chalk.blueBright("4. Clonando repo:"));
-
-          cloneRepo(repoURL, channel.name, category.name.replace(" ", ""));
-
-          debug(chalk.greenBright("OK"));
         } catch (cloneError) {
           debug(chalk.red(cloneError.message));
           debug(chalk.red(cloneError.status));
@@ -111,6 +106,8 @@ const checkDeliverable = async (msg, isEdit = false) => {
     }
 
     thread.send("Entrega OK 👌");
+
+    debug(chalk.blueBright("4. Clonando repo:"));
   } catch (error) {
     if (error.delivery) {
       debug(chalk.red("Error en el formato de la línea"));
@@ -133,6 +130,14 @@ const checkDeliverable = async (msg, isEdit = false) => {
       thread.send(`<@${msg.author.id}> ${getRandomYield()} ${errorMessage}`);
     }
   }
+
+  await axios.post(`${process.env.LOCAL_SERVER}repos`, {
+    repoURL,
+    channel: channel.name,
+    category: category.name.replace(" ", ""),
+    nickname,
+  });
+  debug(chalk.greenBright("OK"));
 };
 
 module.exports = checkDeliverable;

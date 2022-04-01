@@ -1,34 +1,4 @@
 require("dotenv").config();
-const debug = require("debug")("discord-bot:utils");
-const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
-const chalk = require("chalk");
-
-const cloneRepo = (repoUrl, channel, category) => {
-  try {
-    const folder = path.join(
-      "..",
-      process.env.BOOTCAMP,
-      category.toLowerCase(),
-      "entregas",
-      channel
-    );
-    fs.mkdirSync(folder);
-    process.chdir(folder);
-
-    const stdoutGitClone = execSync(`git clone ${repoUrl}`, {
-      encoding: "utf-8",
-    });
-
-    debug(stdoutGitClone);
-  } catch (error) {
-    debug(chalk.red(error.message));
-    const customError = new Error("No se ha podido clonar el repo");
-    customError.custom = true;
-    throw customError;
-  }
-};
 
 const allowedCategoryNames = [
   ...[...Array(12).keys()].slice(1).map((week) => `Week ${week}`),
@@ -96,7 +66,6 @@ module.exports = {
   isDeliveryChannel,
   extractInfo,
   extractChannel,
-  cloneRepo,
   checkLineFormat,
   getExpectedRepoPrefix,
 };
