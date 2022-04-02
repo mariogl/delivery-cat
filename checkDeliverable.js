@@ -1,7 +1,6 @@
 require("dotenv").config();
 const debug = require("debug")("discord-bot:checkDeliverable");
 const { Octokit } = require("@octokit/rest");
-const axios = require("axios");
 const chalk = require("chalk");
 const getRandomYield = require("./randomYields");
 const {
@@ -35,7 +34,6 @@ const checkDeliverable = async (msg, isEdit = false) => {
     }));
 
   const lines = message.split("\n");
-  let repoURL;
 
   try {
     for (const line of lines) {
@@ -58,8 +56,6 @@ const checkDeliverable = async (msg, isEdit = false) => {
         throw error;
       }
 
-      const repoURLPosition = line.search("https://github.com");
-      repoURL = line.slice(repoURLPosition);
       const repoPath = line.split("https://github.com/")[1];
       const parts = repoPath.split("/");
       const owner = parts[0];
@@ -130,14 +126,6 @@ const checkDeliverable = async (msg, isEdit = false) => {
       thread.send(`<@${msg.author.id}> ${getRandomYield()} ${errorMessage}`);
     }
   }
-
-  await axios.post(`${process.env.LOCAL_SERVER}repos`, {
-    repoURL,
-    channel: channel.name,
-    category: category.name.replace(" ", ""),
-    nickname,
-  });
-  debug(chalk.greenBright("OK"));
 };
 
 module.exports = checkDeliverable;
