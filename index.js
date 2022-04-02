@@ -1,9 +1,18 @@
 require("dotenv").config();
 const debug = require("debug")("discord-bot:index");
-
+const http = require("http");
 const chalk = require("chalk");
 const { Client, Intents } = require("discord.js");
 const checkDeliverable = require("./checkDeliverable");
+
+http
+  .createServer((req, res) => {
+    res.write("Hi");
+    res.end();
+  })
+  .listen(process.env.PORT || 8080, () =>
+    debug(chalk.green("Servidor levantado"))
+  );
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
