@@ -23,7 +23,12 @@ const extractChannel = async (msg) => {
 
 const extractInfo = async (msg) => {
   const message = msg.content.trim();
-  let { nickname } = await msg.guild.members.fetch(msg.author);
+  let {
+    nickname,
+    // eslint-disable-next-line prefer-const
+    user: { username },
+  } = await msg.guild.members.fetch(msg.author);
+  nickname = nickname || username;
   nickname = nickname
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
