@@ -121,7 +121,7 @@ const checkDeliverable = async (msg, isEdit = false) => {
       } else if (error.status === 404) {
         errorMessage = "Parece que ese repo no existe... 🙄";
       } else {
-        errorMessage = `Revisa que el nombre de tu repo empiece por ${error.expectedRepoPrefix} 💩`;
+        errorMessage = `Revisa que el nombre de tu repo empiece por ${error.expectedRepoPrefix} y que contenga tu nombre en minúsculas 💩`;
       }
       thread.send(`<@${msg.author.id}> ${getRandomYield()} ${errorMessage}`);
     }
