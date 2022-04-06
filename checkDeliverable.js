@@ -45,7 +45,7 @@ const checkDeliverable = async (msg, isEdit = false) => {
       }
 
       debug(chalk.greenBright("-> OK"));
-      console.log(line.toLowerCase());
+
       if (
         !line.toLowerCase().startsWith("repo:") &&
         !line.toLowerCase().startsWith("front - repo:")

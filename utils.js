@@ -46,14 +46,14 @@ const isDeliveryChannel = (categoryName, channelName) =>
   allowedChannelNames.includes(channelName);
 
 const checkLineFormat = (line) =>
-  line.startsWith("Repo:") ||
-  line.startsWith("Prod:") ||
-  line.startsWith("Front - repo:") ||
-  line.startsWith("Front - prod:") ||
-  line.startsWith("Back - repo:") ||
-  line.startsWith("Back - prod:") ||
-  line.startsWith("Trello:") ||
-  line.startsWith("Grupo:");
+  line.toLowerCase().startsWith("repo:") ||
+  line.toLowerCase().startsWith("prod:") ||
+  line.toLowerCase().startsWith("front - repo:") ||
+  line.toLowerCase().startsWith("front - prod:") ||
+  line.toLowerCase().startsWith("back - repo:") ||
+  line.toLowerCase().startsWith("back - prod:") ||
+  line.toLowerCase().startsWith("trello:") ||
+  line.toLowerCase().startsWith("grupo:");
 
 const getExpectedRepoPrefix = (categoryName, channelName) => {
   let nWeek = categoryName.split(" ")[1];
