@@ -46,7 +46,10 @@ const checkDeliverable = async (msg, isEdit = false) => {
 
       debug(chalk.greenBright("-> OK"));
 
-      if (!line.startsWith("Repo:") && !line.startsWith("Front - repo:")) {
+      if (
+        !line.toLowerCase().startsWith("repo:") &&
+        !line.toLowerCase().startsWith("front - repo:")
+      ) {
         continue;
       }
 
@@ -69,8 +72,8 @@ const checkDeliverable = async (msg, isEdit = false) => {
       );
 
       if (
-        !repoName.startsWith(expectedRepoPrefix) ||
-        !repoName.includes(nickname)
+        !repoName.toLowerCase().startsWith(expectedRepoPrefix.toLowerCase()) ||
+        !repoName.toLowerCase().includes(nickname.toLowerCase())
       ) {
         const error = new Error("Nombre de repo mal formado");
         debug(chalk.red(error.message));
