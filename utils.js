@@ -62,8 +62,8 @@ const getExpectedRepoPrefix = (categoryName, channelName) => {
   }
   const nChallenge = channelName.split("-")[1];
 
-  return `${process.env.BOOTCAMP}-W${nWeek}CH${
-    nChallenge === "weekend" ? "WE" : nChallenge
+  return `${process.env.BOOTCAMP}-w${nWeek}ch${
+    nChallenge === "weekend" ? "we" : nChallenge
   }`;
 };
 
